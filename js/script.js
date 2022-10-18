@@ -7,7 +7,7 @@
     //SE clicchiamo su una cella il cui numero è nell'array bomba E (numero di celle - bombs) !== arrayClicked.length:
             //[]- rimuoviamo dalle celle bomba la classe "ms_click_on_square_bg"
             //[]- assegnamo a tutte le celle bomba una classe -boom- con bg red;
-            //[]- non si può più cliccare (in che modo?)
+            //[]- non si può più cliccare , impostare una variabile flag con una condizione al click delle celle. Se il gioco finisce non succede nulla al click delle celle
             //[]- appare il numero di celle NON bomba clickate prima della bomba:
                     //[]-salvare lunghezza dell'arrayClicked attuale e spostare valore sul DOM.
     //[]SE INVECE click su un numero NON bomba E (numero di celle - bombs) !== arrayClicked.length: 
@@ -155,13 +155,13 @@ function generateSquare (insideNmbr, rowNmbr){
   function lightAndPushClickedSquares (){
     //salvo il contenuto della cella (numero) che verrà ritornato e aggiunto all'array
     const nmbrToPush = parseInt(this.textContent);
-    //se il numero di celle cliccate è inferiore al numero di celle sicure e la cella cliccata è una bomba cambio classi 
-    if(arrayClicked.length < (squareNmbr - bombs) && this.value === squareBombs){
+    //se il numero di celle cliccate è inferiore al numero di celle sicure e la cella cliccata è una bomba inverto classi 
+    if(arrayClicked.length < (squareNmbr - bombs) && nmbrToPush === squareBombs) {
         squareBombs.classList.remove("ms_click_on_square_bg");
         squareBombs.classList.add("ms_boom_square_bg");
         console.log("You Died");
         //se invece la cella non è bomba aggiungo la cella all'array di celle clickat ecambio classe e vado avanti
-    } else if (arrayClicked.length < (squareNmbr - bombs) && this.textContent !== squareBombs.value){
+    } else if (arrayClicked.length < (squareNmbr - bombs) && nmbrToPush !== squareBombs.value){
         //aggiungo un controllo che non permetta di aggiungere all'arrayClicked numeri di celle già cliccate
         if(!arrayClicked.includes(nmbrToPush)){
             this.classList.add("ms_click_on_square_bg");
@@ -189,6 +189,5 @@ function generateSquare (insideNmbr, rowNmbr){
   function stepOnAMine (){
     squareBombs.classList.remove("ms_click_on_square_bg");
     squareBombs.classList.add("ms_boom_square_bg");
-
 }
 */
