@@ -1,18 +1,19 @@
 
 
 //ALL'INTERNO DEL CLICK:
-    //creiamo un'array di 16 numeri casuali all'interno dell'evento click
-        //--> creiamo una funzione che generi un array di numeri random di lunghezza N in un range tra A e B.
-    //creiamo un array arrayClicked in cui vengono pushate le celle clickate con classe "ms_click_on_square_bg"
+    //[x]creiamo un'array di 16 numeri casuali all'interno dell'evento click
+        //[x]creiamo una funzione che generi un array di numeri random di lunghezza N in un range tra A e B.
+    //[x]creiamo un array arrayClicked con i numeri delle celle cliccate FUORI dal ciclo
+        //[x]pushamo le celle attivate dal click con classe "ms_click_on_square_bg" nell'array arrayClicked 
 
-    //SE (numero di celle -  16) !== arrayClicked.LENGTH {
-            //SE clickiamo su uno di questi numeri : 
-            //- si assegna a tutte le celle una classe -boom- con bg red;
-            //- non si può più cliccare (in che modo?)
-            //- appare il numero di celle NON bomba clickate prima della bomba:
-                //-salvare lunghezza dell'arrayClicked e spostare valore sul DOM.
-        //SE INVECE click su un numero NON bomba continuo.
-    //} ALTRIMENTI {loggare messaggio hai vinto}
+    //[]SE (numero di celle -  16) !== arrayClicked.LENGTH {
+            //[]SE clickiamo su uno di questi numeri : 
+            //[]- si assegna a tutte le celle una classe -boom- con bg red;
+            //[]- non si può più cliccare (in che modo?)
+            //[]- appare il numero di celle NON bomba clickate prima della bomba:
+                //[]-salvare lunghezza dell'arrayClicked e spostare valore sul DOM.
+        //[]SE INVECE click su un numero NON bomba continuo.
+    //[]} ALTRIMENTI {loggare messaggio hai vinto}
 
 
 
@@ -28,6 +29,9 @@ let bombs;
     //creiamo una variabile per salvare l'elemento button Play al cui click si genererà la griglia
 const btnPlay = document.querySelector("button");
 
+//creiamo un array arrayClicked con i numeri delle celle cliccate FUORI dal ciclo
+const arrayClicked = [];
+console.log(arrayClicked); //perche se tocco l'inspector si interrompe il push nell'array? perchè riappare quando chiudo e riapro inspector?
 
 btnPlay.addEventListener( "click", function(){
 
@@ -35,6 +39,7 @@ btnPlay.addEventListener( "click", function(){
     const difficulty = document.getElementById("difficulty");
     const level = difficulty.value; 
 
+    //in base al valore del select al momento del play verrà cambiata il numero di caselle e di righe
     switch (level) {
         case "normal":
             squareNmbr = 49;
@@ -61,8 +66,11 @@ btnPlay.addEventListener( "click", function(){
 
     //generiamo un array dal quale creeremo la griglia. Lo generiamo dalla funzione -generateOrderArray-
     const progressiveNmbrs = generateOrderArray (squareNmbr);
-    //per ogni numero dell'array creiamo dinamicamente una cella -square- attraverso un ciclo che scorra l'array
 
+    //generiamo un array con il numero delle celle bomba dalla funzione -generateBombsArray-
+    const bombArray = generateBombsArray (bombs, 1, squareNmbr);
+
+    //per ogni numero dell'array creiamo dinamicamente una cella -square- attraverso un ciclo che scorra l'array
     for (let i = 0; i< progressiveNmbrs.length; i++){
 
         //creo una funzione -generateSquare- che generi un elemento all'interno del quale andrà un contenuto (numero preso dall'array)
@@ -73,10 +81,7 @@ btnPlay.addEventListener( "click", function(){
         grid.append(square);
 
         //ad ogni elemento creato in questo ciclo, assegniamo un evento che lo attiva(al click cambia colore e logga messaggio)
-        square.addEventListener("click", function(){
-            square.classList.add("ms_click_on_square_bg");
-            console.log(innerNmbrs)
-        })
+        square.addEventListener("click", lightAndPushClickedSquares);
     }
  })
 
@@ -111,7 +116,6 @@ function generateSquare (insideNmbr, rowNmbr){
     
 }
 
-console.log(generateBombsArray (16, 1, 100));
 
 /**
  * Description funzione che generi un array di numeri diversi random di lunghezza N in un range tra A e B.
@@ -132,3 +136,14 @@ console.log(generateBombsArray (16, 1, 100));
     }
     return newArray;
  }
+
+ /**
+ * Description: funzione che pusha in un array i numeri delle celle attivate dall'evento click.
+ * @returns {number} --> la funzione restituisce il numero da aggiungere all'array
+ */
+  function lightAndPushClickedSquares (){
+    this.classList.add("ms_click_on_square_bg");
+    const nmbrToPush = parseInt(this.textContent);
+    arrayClicked.push(nmbrToPush);
+    return nmbrToPush;
+}
