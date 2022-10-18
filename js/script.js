@@ -6,16 +6,14 @@
     //[x]creiamo un array arrayClicked con i numeri delle celle cliccate FUORI dal ciclo
         //[x]pushamo le celle attivate dal click con classe "ms_click_on_square_bg" nell'array arrayClicked 
 
-    //[]SE (numero di celle -  16) !== arrayClicked.LENGTH {
-            //[]SE clickiamo su uno di questi numeri : 
+    //[]SE (numero di celle -  bombs) !== arrayClicked.LENGTH {
+            //[]SE clickiamo su uno di questi numeri ; 
             //[]- si assegna a tutte le celle una classe -boom- con bg red;
             //[]- non si può più cliccare (in che modo?)
             //[]- appare il numero di celle NON bomba clickate prima della bomba:
                 //[]-salvare lunghezza dell'arrayClicked e spostare valore sul DOM.
         //[]SE INVECE click su un numero NON bomba continuo.
     //[]} ALTRIMENTI {loggare messaggio hai vinto}
-
-
 
 
 
@@ -49,12 +47,12 @@ btnPlay.addEventListener( "click", function(){
         case "hard": 
             squareNmbr = 81;
             howManyRow = 9;
-            bombs = 16;
+            bombs = 16; //26
         break;
         case "legend": 
             squareNmbr = 100;
             howManyRow = 10;
-            bombs = 16;
+            bombs = 16;  //33
         break;
     }
 
@@ -69,6 +67,14 @@ btnPlay.addEventListener( "click", function(){
 
     //generiamo un array con il numero delle celle bomba dalla funzione -generateBombsArray-
     const bombArray = generateBombsArray (bombs, 1, squareNmbr);
+    console.log(bombArray);
+    let squareBombs;
+    for (let i=0; i<bombArray.length; i++){
+        squareBombs = bombArray[i];
+        console.log(squareBombs)
+    }
+    
+ 
 
     //per ogni numero dell'array creiamo dinamicamente una cella -square- attraverso un ciclo che scorra l'array
     for (let i = 0; i< progressiveNmbrs.length; i++){
@@ -85,9 +91,16 @@ btnPlay.addEventListener( "click", function(){
     }
  })
 
+//  if ((squareNmbr - bombs) !== arrayClicked.length) {
+//     square.addEventListener("click", lightAndPushClickedSquares);
+// }
+
+
+
+//  FUNCTIONS
 
 /**
- * Description Funzione che genera array con numeri progressivi da 1 a 100
+ * Description: Funzione che genera array con numeri progressivi da 1 a 100
  * @param {number} --> numero della lunghezza dell'array 
  * @returns {array} --> la funzione genererà un array 
  */
@@ -100,7 +113,7 @@ function generateOrderArray (arrayLength) {
 }
 
 /**
- * Description Funzione che crea un elemento con un contenuto testuale interno(insideNmbr)
+ * Description: Funzione che crea un elemento con un contenuto testuale interno(insideNmbr)
  * @param {number} --> il contenuto dell'elemento sarà un numero da 1 a 100
  * @param {number} --> il numero delle righe della griglia, che determina altezza e larghezza della cella
  * @returns {object} --> la funzione genererà un elemento nel DOM
@@ -113,12 +126,10 @@ function generateSquare (insideNmbr, rowNmbr){
     newElement.innerHTML = insideNmbr;
     console.log(rowNmbr);
     return newElement;
-    
 }
 
-
 /**
- * Description funzione che generi un array di numeri diversi random di lunghezza N in un range tra A e B.
+ * Description: Funzione che generi un array di numeri diversi random di lunghezza N in un range tra A e B.
  * @param {number} --> lunghezza dell'array (numero di bombe)
  * @param {number} --> valore minimo del range tra cui selezionare gli elementi casuali del array 
  * @param {number} --> valore massimo del range tra cui selezionare gli elementi casuali del array 
@@ -129,7 +140,7 @@ function generateSquare (insideNmbr, rowNmbr){
     let i = 0;
     while ( newArray.length < howManyElements){
         const rndNmbr = Math.floor(Math.random() * (max - min +1)) + min;
-        if (!newArray.includes([rndNmbr])){
+        if (!newArray.includes(rndNmbr)){
             i++;
             newArray.push(rndNmbr);
         }
@@ -138,7 +149,7 @@ function generateSquare (insideNmbr, rowNmbr){
  }
 
  /**
- * Description: funzione che pusha in un array i numeri delle celle attivate dall'evento click.
+ * Description: funzione che colora e pusha in un array i numeri delle celle attivate dall'evento click.
  * @returns {number} --> la funzione restituisce il numero da aggiungere all'array
  */
   function lightAndPushClickedSquares (){

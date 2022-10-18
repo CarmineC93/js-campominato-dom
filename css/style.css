@@ -9,13 +9,18 @@
     --header-height: 90px;
     --footer-height: 50px;
 
-    --ms_click_square_bg: lightskyblue
+    --ms_click_square_bg: lightskyblue;
+    --ms_boom_square_bg: red;
 }
 
 /* UTILITIES */
 
 .ms_click_on_square_bg{
     background-color:var(--ms_click_square_bg);
+}
+
+.ms_boom_square_bg{
+    background-color: var(--ms_boom_square_bg) ;
 }
 
 .flex{  
