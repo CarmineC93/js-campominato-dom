@@ -2,6 +2,7 @@
 
 //ALL'INTERNO DEL CLICK:
     //creiamo un'array di 16 numeri casuali all'interno dell'evento click
+        //--> creiamo una funzione che generi un array di numeri random di lunghezza N in un range tra A e B.
     //creiamo un array arrayClicked in cui vengono pushate le celle clickate con classe "ms_click_on_square_bg"
 
     //SE (numero di celle -  16) !== arrayClicked.LENGTH {
@@ -20,6 +21,7 @@
 //impostiamo in una variabile il numero di celle della griglia
 let squareNmbr;
 let howManyRow;
+let bombs;
 
 
 //All'evento click sul btn Play verrà generata una griglia di gioco
@@ -37,14 +39,17 @@ btnPlay.addEventListener( "click", function(){
         case "normal":
             squareNmbr = 49;
             howManyRow = 7;
+            bombs = 16;
         break;
         case "hard": 
             squareNmbr = 81;
             howManyRow = 9;
+            bombs = 16;
         break;
         case "legend": 
             squareNmbr = 100;
             howManyRow = 10;
+            bombs = 16;
         break;
     }
 
@@ -105,3 +110,25 @@ function generateSquare (insideNmbr, rowNmbr){
     return newElement;
     
 }
+
+console.log(generateBombsArray (16, 1, 100));
+
+/**
+ * Description funzione che generi un array di numeri diversi random di lunghezza N in un range tra A e B.
+ * @param {number} --> lunghezza dell'array (numero di bombe)
+ * @param {number} --> valore minimo del range tra cui selezionare gli elementi casuali del array 
+ * @param {number} --> valore massimo del range tra cui selezionare gli elementi casuali del array 
+ * @returns {array} --> la funzione genererà un array
+ */
+ function generateBombsArray (howManyElements, min, max){
+    const newArray = [];
+    let i = 0;
+    while ( newArray.length < howManyElements){
+        const rndNmbr = Math.floor(Math.random() * (max - min +1)) + min;
+        if (!newArray.includes([rndNmbr])){
+            i++;
+            newArray.push(rndNmbr);
+        }
+    }
+    return newArray;
+ }
