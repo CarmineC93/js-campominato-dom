@@ -1,30 +1,31 @@
-
-
 //ALL'INTERNO DEL CLICK:
-    //[x]creiamo un'array di 16 numeri casuali all'interno dell'evento click
+    //[x]creiamo una griglia dinamica di n celle.
+    //[x]creiamo un'array di 16 numeri casuali (bombe) all'interno dell'evento click:
         //[x]creiamo una funzione che generi un array di numeri random di lunghezza N in un range tra A e B.
-    //[x]creiamo un array arrayClicked con i numeri delle celle cliccate FUORI dal ciclo
-        //[x]pushamo le celle attivate dal click con classe "ms_click_on_square_bg" nell'array arrayClicked 
+    //[x]creiamo FUORI dal ciclo un array 'arrayClicked' con i numeri delle celle cliccate:
 
-    //[]SE (numero di celle -  bombs) !== arrayClicked.length {
-            //[] al click su uno di questi numeri : 
-                //[]- si assegna a tutte le celle bomba una classe -boom- con bg red;
-                //[]- non si può più cliccare (in che modo?)
-                //[]- appare il numero di celle NON bomba clickate prima della bomba:
-                    //[]-salvare lunghezza dell'arrayClicked e spostare valore sul DOM.
-        //[]SE INVECE click su un numero NON bomba continuo.
-    //[]} ALTRIMENTI {loggare messaggio hai vinto}
+    //SE clicchiamo su una cella il cui numero è nell'array bomba E (numero di celle - bombs) !== arrayClicked.length:
+            //[]- rimuoviamo dalle celle bomba la classe "ms_click_on_square_bg"
+            //[]- assegnamo a tutte le celle bomba una classe -boom- con bg red;
+            //[]- non si può più cliccare (in che modo?)
+            //[]- appare il numero di celle NON bomba clickate prima della bomba:
+                    //[]-salvare lunghezza dell'arrayClicked attuale e spostare valore sul DOM.
+    //[]SE INVECE click su un numero NON bomba E (numero di celle - bombs) !== arrayClicked.length: 
+            //[x]pushamo le celle attivate dal click con classe "ms_click_on_square_bg" nell' arrayClicked 
+    //[]} ALTRIMENTI se il numero (numero di celle - bombs) === arrayClicked.length loggare messaggio hai vinto
 
 
 
-//impostiamo in una variabile il numero di celle della griglia
+//impostiamo in una variabile il numero di celle della griglia, quante righe ha la griglia e quante celle bombe ci sono
 let squareNmbr;
 let howManyRow;
 let bombs;
 
-//salviamo in una variabile globale la cella che verrà creata in un ciclo con la funzione 'generateSquare' al click
+//salvo in una variabile globale la cella che verrà creata in un ciclo con la funzione 'generateSquare' al click
 let square;
 
+//salvo in una variabile le celle dell'array contenenti bombe a cui darò valore al click del Play
+let squareBombs;
 
 //All'evento click sul btn Play verrà generata una griglia di gioco
     //creiamo una variabile per salvare l'elemento button Play al cui click si genererà la griglia
@@ -34,7 +35,7 @@ const btnPlay = document.querySelector("button");
 const arrayClicked = [];
 console.log(arrayClicked); //perche se tocco l'inspector si interrompe il push nell'array? perchè riappare quando chiudo e riapro inspector?
 
-btnPlay.addEventListener( "click", function(){
+btnPlay.addEventListener("click", function(){
 
     //prelevo scelta del livello, cioè il livello selezionato al momento del click
     const difficulty = document.getElementById("difficulty");
@@ -71,16 +72,13 @@ btnPlay.addEventListener( "click", function(){
     //generiamo un array con il numero delle celle bomba dalla funzione -generateBombsArray-
     const bombArray = generateBombsArray (bombs, 1, squareNmbr);
     console.log(bombArray);
-    //salvo in una variabile le celle dell'array contenenti bombe
-    let squareBombs;
+
+    //assegno il valore alle celle dell'array contenente bombe
     for (let i=0; i<bombArray.length; i++){
         squareBombs = bombArray[i];
         console.log(squareBombs);
     }
 
-    
-
-    
     //per ogni numero dell'array creiamo dinamicamente una cella -square- attraverso un ciclo che scorra l'array
     for (let i = 0; i< progressiveNmbrs.length; i++){
 
@@ -90,15 +88,9 @@ btnPlay.addEventListener( "click", function(){
         square = generateSquare (innerNmbrs, howManyRow);
         //inserisco l'elemento creato nell'elemento genitore salvato nella variabile -grid-
         grid.append(square);
-
         //ad ogni elemento creato in questo ciclo, assegniamo un evento che lo attiva(al click cambia colore e logga messaggio)
         square.addEventListener("click", lightAndPushClickedSquares);
     }
-
-
-    if ((squareNmbr - bombs) !== arrayClicked.length) {
-        squareBombs.addEventListener("click", stepOnAMine);
-     }
  
  })
 
@@ -161,9 +153,24 @@ function generateSquare (insideNmbr, rowNmbr){
  * @returns {number} --> la funzione restituisce il numero da aggiungere all'array
  */
   function lightAndPushClickedSquares (){
-    this.classList.add("ms_click_on_square_bg");
+    //salvo il contenuto della cella (numero) che verrà ritornato e aggiunto all'array
     const nmbrToPush = parseInt(this.textContent);
-    arrayClicked.push(nmbrToPush);
+    //se il numero di celle cliccate è inferiore al numero di celle sicure e la cella cliccata è una bomba cambio classi 
+    if(arrayClicked.length < (squareNmbr - bombs) && this.value === squareBombs){
+        squareBombs.classList.remove("ms_click_on_square_bg");
+        squareBombs.classList.add("ms_boom_square_bg");
+        console.log("You Died");
+        //se invece la cella non è bomba aggiungo la cella all'array di celle clickat ecambio classe e vado avanti
+    } else if (arrayClicked.length < (squareNmbr - bombs) && this.textContent !== squareBombs.value){
+        //aggiungo un controllo che non permetta di aggiungere all'arrayClicked numeri di celle già cliccate
+        if(!arrayClicked.includes(nmbrToPush)){
+            this.classList.add("ms_click_on_square_bg");
+            arrayClicked.push(nmbrToPush);
+        }
+    } else {
+        console.log("you win");
+    }
+
     return nmbrToPush;
 }
 
@@ -178,8 +185,10 @@ function generateSquare (insideNmbr, rowNmbr){
  * 
  * @returns {string} --> la funzione restituisce una stringa con messaggio di sconfitta e numero di celle non minate cliccate
  */
+/*
   function stepOnAMine (){
     squareBombs.classList.remove("ms_click_on_square_bg");
     squareBombs.classList.add("ms_boom_square_bg");
 
 }
+*/
